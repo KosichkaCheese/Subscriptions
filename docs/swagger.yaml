@@ -1,0 +1,284 @@
+basePath: /api
+definitions:
+  models.CreateService:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.CreateSubscription:
+    properties:
+      end_date:
+        type: string
+      price:
+        minimum: 0
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        type: string
+      user_id:
+        type: string
+    required:
+    - price
+    - service_name
+    - start_date
+    - user_id
+    type: object
+  models.Service:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Subscription:
+    properties:
+      createdAt:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      service:
+        $ref: '#/definitions/models.Service'
+      service_id:
+        type: integer
+      start_date:
+        type: string
+      updatedAt:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.UpdateSubscription:
+    properties:
+      end_date:
+        type: string
+      price:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: API for Subscriptions
+  title: Subscriptions API
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - Test
+  /services:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех сервисов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Service'
+            type: array
+      summary: Получить список сервисов
+      tags:
+      - Service
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый сервис
+      parameters:
+      - description: Service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateService'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Service'
+      summary: Создать новый сервис
+      tags:
+      - Service
+  /services/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет существующий сервис
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удалить сервис
+      tags:
+      - Service
+  /subs:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех подписок
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Subscription'
+            type: array
+      summary: Получить список подписок
+      tags:
+      - Subscription
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую подписку
+      parameters:
+      - description: Subscription
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateSubscription'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Subscription'
+      summary: Добавить новую подписку
+      tags:
+      - Subscription
+  /subs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет существующую подписку
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удалить подписку
+      tags:
+      - Subscription
+    get:
+      consumes:
+      - application/json
+      description: Возвращает подписку по ID
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Subscription'
+      summary: Получить подписку по ID
+      tags:
+      - Subscription
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующую подписку
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Subscription
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSubscription'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Subscription'
+      summary: Обновить подписку
+      tags:
+      - Subscription
+  /subs/sum:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает сумму подписок по фильтрам
+      parameters:
+      - in: query
+        name: end_date
+        type: string
+      - in: query
+        name: service_name
+        type: string
+      - in: query
+        name: start_date
+        type: string
+      - in: query
+        name: user_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получить сумму подписок по фильтрам
+      tags:
+      - Subscription
+swagger: "2.0"
