@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 	"subscriptions/database"
 	_ "subscriptions/docs"
+	"subscriptions/handlers"
 	"subscriptions/repository"
 	"subscriptions/routes"
 	"subscriptions/services"
@@ -35,11 +35,10 @@ func main() {
 	serviceservice := services.NewServiceService(servicerepo)
 	subscriptionservice := services.NewSubscriptionService(subscriptionrepo, servicerepo)
 
-	//проверка репозитория
-	log.Println(serviceservice.GetAll(context.Background()))
-	log.Println(subscriptionservice.GetAll(context.Background()))
+	servicehandler := handlers.NewServiceHandler(serviceservice)
+	subscriptionhandler := handlers.NewSubscriptionHandler(subscriptionservice)
 
-	router := routes.SetupRouter()
+	router := routes.SetupRouter(servicehandler, subscriptionhandler)
 	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
 	err = router.Run(":" + os.Getenv("APP_PORT"))
 	if err != nil {

@@ -31,6 +31,18 @@ type CreateSubscription struct {
 	EndDate     *string `json:"end_date,omitempty"`
 }
 
+type UpdateSubscription struct {
+	Price   *uint   `json:"price,omitempty"`
+	EndDate *string `json:"end_date,omitempty"`
+}
+
+type SumFilter struct {
+	UserID      *string `form:"user_id"`
+	ServiceName *string `form:"service_name"`
+	StartDate   *string `form:"start_date"`
+	EndDate     *string `form:"end_date"`
+}
+
 type CreateService struct {
 	Name string `json:"name" binding:"required"`
 }
