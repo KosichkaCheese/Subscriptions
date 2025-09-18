@@ -7,11 +7,20 @@ import (
 	"gorm.io/gorm"
 )
 
+type ServiceRepoInterface interface {
+	Create(ctx context.Context, service *models.Service) error
+	GetAll(ctx context.Context) ([]models.Service, error)
+	GetById(ctx context.Context, id uint) (*models.Service, error)
+	GetByName(ctx context.Context, name string) (*models.Service, error)
+	Update(ctx context.Context, service *models.Service) error
+	Delete(ctx context.Context, id uint) error
+}
+
 type ServiceRepo struct {
 	db *gorm.DB
 }
 
-func NewServiceRepo(db *gorm.DB) *ServiceRepo { //создание репозитория для сервисов
+func NewServiceRepo(db *gorm.DB) ServiceRepoInterface { //создание репозитория для сервисов
 	return &ServiceRepo{db: db}
 }
 

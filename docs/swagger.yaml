@@ -1,0 +1,23 @@
+basePath: /api
+info:
+  contact: {}
+  description: API for Subscriptions
+  title: Subscriptions API
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - Test
+swagger: "2.0"

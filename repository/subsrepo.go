@@ -7,11 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
+type SubscriptionRepoInterface interface {
+	Create(ctx context.Context, subscription *models.Subscription) error
+	GetById(ctx context.Context, id uint) (*models.Subscription, error)
+	GetAll(ctx context.Context) ([]models.Subscription, error)
+	Update(ctx context.Context, subscription *models.Subscription) error
+	Delete(ctx context.Context, id uint) error
+	GetByFilters(ctx context.Context, userId, serviceName string, start, end *string) ([]models.Subscription, error)
+	SumByFilters(ctx context.Context, userId, serviceName string, start, end *string) (int, error)
+}
+
 type SubscriptionRepo struct {
 	db *gorm.DB
 }
 
-func NewSubscriptionRepo(db *gorm.DB) *SubscriptionRepo {
+func NewSubscriptionRepo(db *gorm.DB) SubscriptionRepoInterface {
 	return &SubscriptionRepo{db: db}
 }
 

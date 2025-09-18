@@ -30,3 +30,7 @@ type CreateSubscription struct {
 	StartDate   string  `json:"start_date" binding:"required"`
 	EndDate     *string `json:"end_date,omitempty"`
 }
+
+type CreateService struct {
+	Name string `json:"name" binding:"required"`
+}
