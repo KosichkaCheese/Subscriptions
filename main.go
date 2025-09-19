@@ -13,6 +13,7 @@ import (
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
+	"go.uber.org/zap"
 )
 
 // @title Subscriptions API
@@ -20,20 +21,27 @@ import (
 // @description API for Subscriptions
 // @BasePath /api
 func main() {
-	log.Println("Запуск приложения...")
-
-	err := godotenv.Load()
+	logger, err := zap.NewDevelopment()
 	if err != nil {
-		log.Fatalf("Ошибка загрузки переменных окружения: %v", err)
+		log.Fatalf("Ошибка инициализации логгера: %v", err)
+	}
+	defer logger.Sync()
+	sugar := logger.Sugar()
+
+	sugar.Info("Запуск приложения...")
+
+	err = godotenv.Load()
+	if err != nil {
+		sugar.Fatalf("Ошибка загрузки переменных окружения: %v", err)
 	}
 
-	db := database.ConnectDB()
+	db := database.ConnectDB(sugar)
 
 	servicerepo := repository.NewServiceRepo(db)
 	subscriptionrepo := repository.NewSubscriptionRepo(db)
 
-	serviceservice := services.NewServiceService(servicerepo)
-	subscriptionservice := services.NewSubscriptionService(subscriptionrepo, servicerepo)
+	serviceservice := services.NewServiceService(servicerepo, sugar)
+	subscriptionservice := services.NewSubscriptionService(subscriptionrepo, servicerepo, sugar)
 
 	servicehandler := handlers.NewServiceHandler(serviceservice)
 	subscriptionhandler := handlers.NewSubscriptionHandler(subscriptionservice)
@@ -42,8 +50,6 @@ func main() {
 	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
 	err = router.Run(":" + os.Getenv("APP_PORT"))
 	if err != nil {
-		log.Fatalf("Ошибка запуска приложения: %v", err)
+		sugar.Fatalf("Ошибка запуска приложения:, %v", err)
 	}
-
-	log.Println("Приложение запущено")
 }

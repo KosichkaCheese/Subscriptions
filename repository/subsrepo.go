@@ -14,7 +14,6 @@ type SubscriptionRepoInterface interface {
 	GetAll(ctx context.Context) ([]models.Subscription, error)
 	Update(ctx context.Context, subscription *models.Subscription) error
 	Delete(ctx context.Context, id uint) error
-	GetByFilters(ctx context.Context, userId, serviceName *string, start, end *time.Time) ([]models.Subscription, error)
 	SumByFilters(ctx context.Context, userId, serviceName *string, start, end *time.Time) (int, error)
 }
 
@@ -54,32 +53,6 @@ func (repo *SubscriptionRepo) Delete(ctx context.Context, id uint) error {
 	return repo.db.WithContext(ctx).Delete(&models.Subscription{}, id).Error
 }
 
-func (repo *SubscriptionRepo) GetByFilters(ctx context.Context, userId, serviceName *string, start, end *time.Time) ([]models.Subscription, error) {
-	query := repo.db.WithContext(ctx).Model(&models.Subscription{}).Preload("Service")
-
-	if userId != nil {
-		query = query.Where("user_id = ?", userId)
-	}
-
-	if serviceName != nil {
-		query = query.Joins("JOIN services ON services.id = subscriptions.service_id").Where("services.name = ?", serviceName)
-	}
-
-	if start != nil {
-		query = query.Where("start_date >= ?", start)
-	}
-
-	if end != nil {
-		query = query.Where("end_date <= ?", end)
-	}
-
-	var subscriptions []models.Subscription
-	if err := query.Find(&subscriptions).Error; err != nil {
-		return nil, err
-	}
-	return subscriptions, nil
-}
-
 func (repo *SubscriptionRepo) SumByFilters(ctx context.Context, userId, serviceName *string, start, end *time.Time) (int, error) {
 	query := repo.db.WithContext(ctx).Model(&models.Subscription{}).Select("SUM(Price)")
 
@@ -96,7 +69,7 @@ func (repo *SubscriptionRepo) SumByFilters(ctx context.Context, userId, serviceN
 	}
 
 	if end != nil {
-		query = query.Where("end_date <= ?", end)
+		query = query.Where("end_date <= ? OR end_date IS NULL", end)
 	}
 
 	var total int

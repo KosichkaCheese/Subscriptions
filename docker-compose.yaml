@@ -1,5 +1,7 @@
 services:
   database:
+    container_name: database
+    restart: always
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -7,3 +9,19 @@ services:
       POSTGRES_DB: subs_db
     ports:
       - "5438:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  api:
+    container_name: api
+    restart: always
+    build: .
+    depends_on:
+      - database
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    working_dir: /app
+
+volumes:
+  postgres-data:
