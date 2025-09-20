@@ -34,7 +34,7 @@ func ConnectDB(logger *zap.SugaredLogger) *gorm.DB {
 				break
 			}
 
-			logger.Warn("База данных не доступна. Повторная попытка подключения...")
+			logger.Warn("База данных недоступна. Повторная попытка подключения...")
 
 			time.Sleep(2 * time.Second)
 		}

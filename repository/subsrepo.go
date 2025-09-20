@@ -69,7 +69,7 @@ func (repo *SubscriptionRepo) SumByFilters(ctx context.Context, userId, serviceN
 	}
 
 	if end != nil {
-		query = query.Where("end_date <= ? OR end_date IS NULL", end)
+		query = query.Where("end_date <= ? OR end_date IS NULL", end) //нужно учесть записи, у которых нет конца
 	}
 
 	var total int

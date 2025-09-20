@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type SubscriptionRepoMock struct {
+type SubscriptionRepoMock struct { //мок для репозитория подписок
 	mock.Mock
 }
 
