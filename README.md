@@ -22,4 +22,4 @@ Swagger-документация находится по адресу http://loc
 <img width="1646" height="249" alt="image" src="https://github.com/user-attachments/assets/bd976d5d-131f-4555-a809-9e78bbaecc93" />
 под тегом Subscriptions вы можете: получить список всех записей, конкретную запись по id, добавить запись, обновить(изменить можно дату окончания и стоимость), удалить и получить сумму записей по заданным фильтрам. Swagger подскажет вам формат запросов.
 <img width="1666" height="428" alt="image" src="https://github.com/user-attachments/assets/a40351d0-880f-4e3d-818b-fe74fc848077" />
-Для запуска тестов используйте в терминале `go test -v ./tests`
+Для запуска тестов, находясь в папке проекта, используйте в терминале `go test -v ./tests`
