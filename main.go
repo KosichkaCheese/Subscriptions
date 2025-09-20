@@ -21,7 +21,7 @@ import (
 // @description API for Subscriptions
 // @BasePath /api
 func main() {
-	logger, err := zap.NewDevelopment()
+	logger, err := zap.NewDevelopment() //логгер
 	if err != nil {
 		log.Fatalf("Ошибка инициализации логгера: %v", err)
 	}
@@ -30,24 +30,24 @@ func main() {
 
 	sugar.Info("Запуск приложения...")
 
-	err = godotenv.Load()
+	err = godotenv.Load() //загрузка переменных
 	if err != nil {
 		sugar.Fatalf("Ошибка загрузки переменных окружения: %v", err)
 	}
 
-	db := database.ConnectDB(sugar)
+	db := database.ConnectDB(sugar) //бд
 
-	servicerepo := repository.NewServiceRepo(db)
+	servicerepo := repository.NewServiceRepo(db) //репозитории
 	subscriptionrepo := repository.NewSubscriptionRepo(db)
 
-	serviceservice := services.NewServiceService(servicerepo, sugar)
+	serviceservice := services.NewServiceService(servicerepo, sugar) //сервисы
 	subscriptionservice := services.NewSubscriptionService(subscriptionrepo, servicerepo, sugar)
 
-	servicehandler := handlers.NewServiceHandler(serviceservice)
+	servicehandler := handlers.NewServiceHandler(serviceservice) //хендлеры
 	subscriptionhandler := handlers.NewSubscriptionHandler(subscriptionservice)
 
 	router := routes.SetupRouter(servicehandler, subscriptionhandler)
-	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler)) //swagger
 	err = router.Run(":" + os.Getenv("APP_PORT"))
 	if err != nil {
 		sugar.Fatalf("Ошибка запуска приложения:, %v", err)

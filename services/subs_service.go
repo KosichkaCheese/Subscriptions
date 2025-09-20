@@ -33,11 +33,11 @@ func NewSubscriptionService(subsrepo repository.SubscriptionRepoInterface, servi
 }
 
 func (s *SubscriptionService) Create(ctx context.Context, subscription *models.CreateSubscription) (*models.Subscription, error) {
-	service, err := s.servicerepo.GetByName(ctx, subscription.ServiceName)
-	if err != nil { //проверка на наличие сервиса в базе данных
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	service, err := s.servicerepo.GetByName(ctx, subscription.ServiceName) //проверяем, есть ли сервис
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) { //если нет, добавляем
 			service = &models.Service{Name: subscription.ServiceName}
-			if err = s.servicerepo.Create(ctx, service); err != nil { //создание сервиса в базе данных
+			if err = s.servicerepo.Create(ctx, service); err != nil {
 				s.logger.Errorf("Create service failed: %v", err)
 				return nil, err
 			}
@@ -62,7 +62,7 @@ func (s *SubscriptionService) Create(ctx context.Context, subscription *models.C
 		}
 		endDate = &endDateParse
 
-		if endDate.Before(startDate) {
+		if endDate.Before(startDate) { //конец не должен быть раньше начала
 			ErrInvalidDate = errors.New("end date must be after start date")
 			s.logger.Error(ErrInvalidDate)
 			return nil, ErrInvalidDate
@@ -114,7 +114,7 @@ func (s *SubscriptionService) Update(ctx context.Context, id uint, update *model
 			s.logger.Errorf("Parsing end date failed: %v", err)
 			return nil, err
 		}
-		if endDate.Before(sub.StartDate) {
+		if endDate.Before(sub.StartDate) { //конец не должен быть раньше начала
 			ErrInvalidDate = errors.New("end date must be after start date")
 			s.logger.Error(ErrInvalidDate)
 			return nil, ErrInvalidDate
@@ -167,7 +167,7 @@ func (s *SubscriptionService) SumByFilters(ctx context.Context, filters *models.
 		endDate = &end
 	}
 
-	if startDate != nil && endDate != nil && startDate.After(*endDate) {
+	if startDate != nil && endDate != nil && startDate.After(*endDate) { //конец не должен быть раньше начала
 		ErrInvalidDate = errors.New("end date must be after start date")
 		s.logger.Error(ErrInvalidDate)
 		return 0, ErrInvalidDate

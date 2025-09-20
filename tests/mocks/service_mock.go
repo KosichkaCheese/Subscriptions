@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type ServiceRepoMock struct {
+type ServiceRepoMock struct { //мок для репозитория сервиса, должен удовлетворять интерфейсу
 	mock.Mock
 }
 

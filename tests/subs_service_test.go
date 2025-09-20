@@ -15,7 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestCreate_NoService(t *testing.T) {
+func TestCreate_NoService(t *testing.T) { //нет сервиса с таким именем
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
@@ -34,7 +34,7 @@ func TestCreate_NoService(t *testing.T) {
 	srepo.On("GetByName", ctx, "Spotify").Return(nil, gorm.ErrRecordNotFound)
 	srepo.On("Create", ctx, mock.AnythingOfType("*models.Service")).Run(func(args mock.Arguments) {
 		s := args.Get(1).(*models.Service)
-		s.ID = 1
+		s.ID = 1 // отдаем сервису id 1, чтобы функция не упала
 	}).Return(nil)
 	subrepo.On("Create", ctx, mock.AnythingOfType("*models.Subscription")).Return(nil)
 
@@ -50,7 +50,7 @@ func TestCreate_NoService(t *testing.T) {
 	subrepo.AssertExpectations(t)
 }
 
-func TestCreate_InvalidDate(t *testing.T) {
+func TestCreate_InvalidDate(t *testing.T) { //невалидная дата
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
@@ -78,7 +78,7 @@ func TestCreate_InvalidDate(t *testing.T) {
 	assert.EqualError(t, err, "end date must be after start date")
 }
 
-func TestUpdate_Success(t *testing.T) {
+func TestUpdate_Success(t *testing.T) { //успешное обновление
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
@@ -107,7 +107,7 @@ func TestUpdate_Success(t *testing.T) {
 	assert.Equal(t, uint(600), res.Price)
 }
 
-func TestUpdate_InvalidDate(t *testing.T) {
+func TestUpdate_InvalidDate(t *testing.T) { //невалидная дата
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
@@ -136,7 +136,7 @@ func TestUpdate_InvalidDate(t *testing.T) {
 	assert.EqualError(t, err, "end date must be after start date")
 }
 
-func TestSumByFilters_Success(t *testing.T) {
+func TestSumByFilters_Success(t *testing.T) { //успешное получение суммы
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
@@ -167,7 +167,7 @@ func TestSumByFilters_Success(t *testing.T) {
 
 }
 
-func TestSumByFilters_InvalidDate(t *testing.T) {
+func TestSumByFilters_InvalidDate(t *testing.T) { //невалидная дата
 	ctx := context.Background()
 	srepo := new(mocks.ServiceRepoMock)
 	subrepo := new(mocks.SubscriptionRepoMock)
